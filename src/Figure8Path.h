@@ -1,11 +1,20 @@
+// =============================================================================
+// Figure8Path.h — Lissajous 1:2 figure-of-eight
+//
+// Same phase accumulator as CircularPath, different output: y oscillates at
+// twice the rate of x. Plot (sin(t), sin(2t)) and you get an "infinity" curve
+// that crosses through the origin twice per cycle.
+// =============================================================================
 #pragma once
 
 #include <math.h>
-
 #include "PathBase.h"
 
 namespace qbm {
 
+// Mirrors CircularPath structure — same phase accumulator, different GetPosition.
+// Could share a common base, but at this size duplication is clearer than
+// abstraction.
 class Figure8Path : public PathBase {
 public:
     Figure8Path() : phase_(0.0f), rate_(1.0f) {}
@@ -18,6 +27,7 @@ public:
         while (phase_ < 0.0f)   phase_ += kTwoPi;
     }
 
+    // The 1:2 Lissajous: x at base frequency, y at double frequency.
     SpatialPosition GetPosition() const override {
         return { sinf(phase_), sinf(2.0f * phase_) };
     }
