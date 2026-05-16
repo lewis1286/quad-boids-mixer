@@ -24,6 +24,7 @@ enum class PathType : unsigned int {
     CIRCULAR = 0,
     FIGURE8  = 1,
     BOIDS    = 2,
+    STATIC   = 3,
 };
 
 // This is an ABSTRACT BASE CLASS (Python: an ABC with @abstractmethod).

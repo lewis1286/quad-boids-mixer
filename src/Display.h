@@ -40,10 +40,10 @@ public:
 
         // Corner labels. `SetCursor(x, y)` positions the text cursor; the next
         // `WriteString` draws there. Font_6x8 = 6 px wide, 8 px tall.
-        patch_.display.SetCursor(2, 4);   patch_.display.WriteString("RL", Font_6x8, true);
-        patch_.display.SetCursor(110, 4); patch_.display.WriteString("RR", Font_6x8, true);
-        patch_.display.SetCursor(2, 38);  patch_.display.WriteString("FL", Font_6x8, true);
-        patch_.display.SetCursor(110, 38);patch_.display.WriteString("FR", Font_6x8, true);
+        patch_.display.SetCursor(2, 4);   patch_.display.WriteString("FL", Font_6x8, true);
+        patch_.display.SetCursor(110, 4); patch_.display.WriteString("FR", Font_6x8, true);
+        patch_.display.SetCursor(2, 38);  patch_.display.WriteString("RL", Font_6x8, true);
+        patch_.display.SetCursor(110, 38);patch_.display.WriteString("RR", Font_6x8, true);
 
         // For each input, project its (x, y) field position onto OLED pixels
         // and draw a 3x3 dot there. The formulas come from contracts/ui-interactions.md.
@@ -51,8 +51,8 @@ public:
             // (audio_x + 1) * 0.5 maps [-1, +1] -> [0, 1], times 119 spans the
             // usable horizontal width, plus 4 px padding on the left.
             int sx = static_cast<int>((pos[i].x + 1.0f) * 0.5f * 119.0f) + 4;
-            // Y is flipped: +1 (rear) goes to TOP of screen.
-            int sy = static_cast<int>((1.0f - (pos[i].y + 1.0f) * 0.5f) * 43.0f) + 2;
+            // Y: +1 (rear) goes to BOTTOM of screen, -1 (front) to TOP.
+            int sy = static_cast<int>((pos[i].y + 1.0f) * 0.5f * 43.0f) + 2;
             DrawMarker3x3(sx, sy);
         }
     }
@@ -61,10 +61,10 @@ public:
     void RenderStatus(const UIState& ui) {
         // Horizontal divider at y=48. Status bar is rows 49-63 (14 px),
         // two stacked 7-px text rows so 14-char labels fit at 6 px/char width.
-        DrawHLine(0, 127, 48);
+        DrawHLine(0, 127, 47);
 
-        DrawLabel(0, 49, ui, 3);
-        DrawLabel(0, 57, ui, 4);
+        DrawLabel(0, 48, ui, 3);
+        DrawLabel(0, 56, ui, 4);
     }
 
     // Push the framebuffer to the physical OLED over SPI. This can take a
@@ -130,6 +130,7 @@ private:
             case PathType::CIRCULAR: return "CIRC";
             case PathType::FIGURE8:  return "FIG8";
             case PathType::BOIDS:    return "BOID";
+            case PathType::STATIC:   return "OFF";
         }
         return "????";
     }

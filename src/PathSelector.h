@@ -15,6 +15,7 @@
 #include "CircularPath.h"
 #include "Figure8Path.h"
 #include "PathBase.h"
+#include "StaticPath.h"
 
 namespace qbm {
 
@@ -33,7 +34,8 @@ public:
         switch (active_) {
             case PathType::CIRCULAR: active_ = PathType::FIGURE8;  break;
             case PathType::FIGURE8:  active_ = PathType::BOIDS;    break;
-            case PathType::BOIDS:    active_ = PathType::CIRCULAR; break;
+            case PathType::BOIDS:    active_ = PathType::STATIC;   break;
+            case PathType::STATIC:   active_ = PathType::CIRCULAR; break;
         }
     }
 
@@ -51,20 +53,20 @@ public:
     // and a read-only accessor for const callers.
     PathBase* Active() {
         switch (active_) {
-            case PathType::CIRCULAR: return &circular_;  // `&x` = "address of x"
+            case PathType::CIRCULAR: return &circular_;
             case PathType::FIGURE8:  return &figure8_;
             case PathType::BOIDS:    return &boids_;
+            case PathType::STATIC:   return &static_;
         }
-        return &circular_;  // unreachable, but the compiler insists on a fallback
+        return &circular_;
     }
 
-    // `const` version — callable on a `const PathSelector&`. Returns a
-    // pointer to const so callers can't mutate the path.
     const PathBase* Active() const {
         switch (active_) {
             case PathType::CIRCULAR: return &circular_;
             case PathType::FIGURE8:  return &figure8_;
             case PathType::BOIDS:    return &boids_;
+            case PathType::STATIC:   return &static_;
         }
         return &circular_;
     }
@@ -79,6 +81,7 @@ private:
     CircularPath circular_;
     Figure8Path  figure8_;
     BoidsPath    boids_;
+    StaticPath   static_;
     PathType     active_;
 };
 
