@@ -74,7 +74,9 @@ static volatile bool    g_enc_falling = false;
 // One-pole IIR smoothers for the four input positions. alpha = 0.00131
 // gives a ~10 Hz cutoff at 48 kHz sample rate, i.e. ~100 ms time constant —
 // fast enough to feel responsive, slow enough to wipe out zipper noise.
-constexpr float kSmoothAlpha = 0.00131f;
+// Block rate is ~1500 Hz (48 kHz / 32 samples). Time constant τ ≈ 1/(α × 1500).
+// 0.00131 → ~510 ms (very sluggish). 0.05 → ~13 ms (snappy, still zipper-free).
+constexpr float kSmoothAlpha = 0.05f;
 static Smoother<float> s_x1(kSmoothAlpha), s_y1(kSmoothAlpha);
 static Smoother<float> s_x2(kSmoothAlpha), s_y2(kSmoothAlpha);
 static Smoother<float> s_x3(kSmoothAlpha), s_y3(kSmoothAlpha);

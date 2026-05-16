@@ -11,8 +11,6 @@
 // =============================================================================
 #pragma once
 
-#include <math.h>      // sqrtf — angle-bracket include = standard / system header
-                       // (#include "x.h" = local header, #include <x.h> = system)
 #include "SpatialPos.h"
 
 namespace qbm {
@@ -54,11 +52,14 @@ inline QuadGains ComputeGains(SpatialPosition pos) {
     // Build the return value. `QuadGains g;` default-constructs (all fields
     // are uninitialised garbage at this point — C++ doesn't zero memory like
     // Python does). We then assign each field, then return by value.
+    // Linear bilinear law (no sqrtf). Sharper corner isolation than equal-power
+    // sqrtf: adjacent channel at 90% position gets -27 dB instead of -13 dB.
+    // Corners still reach unity; centre drops to 0.25 per channel.
     QuadGains g;
-    g.fl = sqrtf(one_minus_u * one_minus_v);  // corner: x=-1, y=-1
-    g.fr = sqrtf(u           * one_minus_v);  // corner: x=+1, y=-1
-    g.rl = sqrtf(one_minus_u * v);            // corner: x=-1, y=+1
-    g.rr = sqrtf(u           * v);            // corner: x=+1, y=+1
+    g.fl = one_minus_u * one_minus_v;  // corner: x=-1, y=-1
+    g.fr = u           * one_minus_v;  // corner: x=+1, y=-1
+    g.rl = one_minus_u * v;            // corner: x=-1, y=+1
+    g.rr = u           * v;            // corner: x=+1, y=+1
     return g;
 }
 
