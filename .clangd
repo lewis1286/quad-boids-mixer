@@ -1,0 +1,10 @@
+CompileFlags:
+  Add:
+    - "-isystem/Users/lewisguignard/code/daisy_patch/libDaisy/src"
+    - "-isystem/Users/lewisguignard/code/daisy_patch/DaisySP/Source"
+    - "-DARM_MATH_CM7"
+  Compiler: clang
+
+Diagnostics:
+  Suppress:
+    - "pp_file_not_found"
